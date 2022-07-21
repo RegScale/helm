@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapRef.name }}
+  namespace: {{ .Values.namespace }}
+data:
+  # File Configuration
+  StoredFilesPath: "{{ .Values.StoredFilesPath }}"
+  FileSizeLimit: "{{ .Values.FileSizeLimit }}"
+  # If you want to enable monitoring, enter your Sentry.io Sdn, otherwise, leave blank
+  SENTRY: ""

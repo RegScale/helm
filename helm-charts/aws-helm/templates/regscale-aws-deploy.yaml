@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: regscale
+  minReadySeconds: 60
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: regscale
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: "{{ .Values.volumeMounts.mountPath }}"
+            name: {{ .Values.volumeMounts.name }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMapRef.name }}
+        - secretRef:
+            name: {{ .Values.secretRef.name }}
+      volumes:
+      - name: {{ .Values.volumeMounts.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.name }}

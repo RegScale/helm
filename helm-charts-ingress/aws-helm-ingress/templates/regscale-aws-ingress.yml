@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: {{ .Values.annotations.scheme }}
+    alb.ingress.kubernetes.io/target-type:  {{ .Values.annotations.targetType }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.annotations.arnCert }}
+    alb.ingress.kubernetes.io/listen-ports: '{{ .Values.annotations.listenPorts }}'
+    alb.ingress.kubernetes.io/ssl-redirect: '{{ .Values.annotations.sslRedirect }}'
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.name}}
+            port:
+              number: 80
+

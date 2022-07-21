@@ -1,0 +1,52 @@
+# Default values for regscale.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: regscale
+
+deployment:
+  name: regscale-deploy
+replicaCount: 1
+
+image:
+  repository: c2labs/atlasity:latest
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+service:
+  name: regscale-svc
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+
+volumeMounts:
+  mountPath: "/regscale/files"
+  name: regscale-files 
+
+JWTSecretKey: "JWTSecretKeyFromSomeWhere6789012"
+SQLConn: "Server=tcp:yourdatabase.database.windows.net,1433;Initial Catalog=ATLAS;Persist Security Info=False;User ID=youruserID;Password=yourPassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+EncryptionKey: "YourEncryptionKeyFromSomeWhere12"
+
+storageClassName: hostpath
+capacity:
+  storage: 1Gi
+hostPath:
+  path: "youLocalHostPathpath"
+  type: DirectoryOrCreate
+
+
+StoredFilesPath: "/regscale/files"
+FileSizeLimit: "104857600"
+
+pvc:
+  name: regscale-pvc
+
+pv:
+  name: regscale-pv
+
+configMapRef:
+  name: regscale-config
+
+secretRef:
+  name: regscale-secrets
