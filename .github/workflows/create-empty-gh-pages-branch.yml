@@ -2,7 +2,7 @@ name: Empty-gh-pages-branch
 
 on:
   push:
-    branches: [ echehelm ] 
+    branches: [ none ] 
 
     # paths-ignore:
     #   - README.md

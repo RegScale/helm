@@ -40,3 +40,39 @@ jobs:
       with:
         branch: aws-gh-pages
         folder: aws-charts
+
+  publish-azure-helmchart:
+    needs: [ publish-aws-helmchart ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create azure charts directory
+      run: |
+        pwd
+        mkdir azure-charts
+        ls
+    - name: copy azure-helm-charts and README to aws-charts folder
+      run: |
+        cp -a $GITHUB_WORKSPACE/helm-charts/azure-helm/*.tgz  $GITHUB_WORKSPACE/azure-charts 
+        cp -a $GITHUB_WORKSPACE/helm-charts/azure-helm/README.md  $GITHUB_WORKSPACE/azure-charts    
+
+    - name: Create index file
+      run: helm repo index $GITHUB_WORKSPACE/azure-charts  
+
+    - name: check content of charts
+      run: |
+       cd azure-charts
+       ls
+
+    # - name: Publish on GitHub Pages
+    #   uses: ftnext/action-push-ghpages@v1.0.0
+    #   with:
+    #    build_dir: charts
+    #    github_token: ${{ secrets.RELEASE_GITHUB_PAT }}
+
+    - name: Publish on Github Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: azure-gh-pages
+        folder: azure-charts 
