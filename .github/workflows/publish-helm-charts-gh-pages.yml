@@ -1,0 +1,42 @@
+name: Helm Publish
+
+on:
+  push:
+    branches: [ none ]
+    paths-ignore:
+      - create-empty-gh-pages-branch.yml
+jobs:
+  publish-aws-helmchart:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create charts directory
+      run: |
+        pwd
+        mkdir aws-charts
+        ls
+    - name: copy aws-helm-charts and README to aws-charts folder
+      run: |
+        cp -a $GITHUB_WORKSPACE/helm-charts/aws-helm/*.tgz  $GITHUB_WORKSPACE/aws-charts 
+        cp -a $GITHUB_WORKSPACE/helm-charts/aws-helm/README.md  $GITHUB_WORKSPACE/aws-charts    
+
+    - name: Create index file
+      run: helm repo index $GITHUB_WORKSPACE/aws-charts  
+
+    - name: check content of charts
+      run: |
+       cd aws-charts
+       ls
+
+    # - name: Publish on GitHub Pages
+    #   uses: ftnext/action-push-ghpages@v1.0.0
+    #   with:
+    #    build_dir: charts
+    #    github_token: ${{ secrets.RELEASE_GITHUB_PAT }}
+
+    - name: Publish on Github Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: aws-gh-pages
+        folder: aws-charts
