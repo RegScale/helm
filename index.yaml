@@ -3,7 +3,7 @@ entries:
   azure-helm:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-07-21T14:30:55.491460732Z"
+    created: "2022-07-25T15:43:14.033271008Z"
     description: A Helm chart for Kubernetes
     digest: fbf4fb94fc878697d821aaaf8fc40bc0706c32ecce2028ccb6e06be2d25bd2ef
     name: azure-helm
@@ -11,4 +11,4 @@ entries:
     urls:
     - azure-helm-0.4.0.tgz
     version: 0.4.0
-generated: "2022-07-21T14:30:55.490428625Z"
+generated: "2022-07-25T15:43:14.032515112Z"
