@@ -29,6 +29,16 @@ jobs:
        cd aws-charts
        ls
 
+    - name: Create a  folder in aws-charts
+      run: |
+       cd $GITHUB_WORKSPACE/aws-charts
+       mkdir aws-helm-chart
+       
+    - name: Move .tgz and index files from aws-charts to aws-helm-chart
+      run: |
+        mv    $GITHUB_WORKSPACE/aws-charts/*.tgz $GITHUB_WORKSPACE/aws-charts/aws-helm-chart
+
+        mv $GITHUB_WORKSPACE/aws-charts/index.yaml $GITHUB_WORKSPACE/aws-charts/aws-helm-chart
     # - name: Publish on GitHub Pages
     #   uses: ftnext/action-push-ghpages@v1.0.0
     #   with:
