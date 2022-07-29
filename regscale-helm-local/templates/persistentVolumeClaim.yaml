@@ -1,12 +1,17 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.pvc.name }}
-  namespace: {{ .Values.namespace }}
+  name: {{ include "regscale-local.pvcName" . }}
+  labels:
+    {{- include "regscale-local.labels" . | nindent 4 }}
 spec:
-  storageClassName: {{ .Values.storageClassName }}
+  {{- if .Values.persistentVolumeClaim.storageClass }}
+  storageClassName: {{ .Values.persistentVolumeClaim.storageClass }}
+  {{- end }}
+  {{- with .Values.persistentVolumeClaim.accessModes }}
   accessModes:
-    - ReadWriteMany
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   resources:
     requests:
-      storage: {{ .Values.capacity.storage }}
+      storage: {{ .Values.persistentVolumeClaim.capacity }}
