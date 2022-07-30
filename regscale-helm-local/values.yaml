@@ -10,6 +10,7 @@ image:
   # -- Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
+# -- Names of secrets to use for authentication to image registries
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: "regscale-local"
@@ -52,6 +53,7 @@ serviceAccount:
   name: ""
 
 persistentVolumeClaim:
+  # -- Specifies a specific storageClassName for the PVC, defaults to empty to allow cluster to provision
   storageClass: ""
   accessModes:
     - ReadWriteOnce
