@@ -2,51 +2,94 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: regscale
-
-deployment:
-  name: regscale-deploy
 replicaCount: 1
 
 image:
-  repository: c2labs/atlasity:latest
+  repository: c2labs/atlasity
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  # -- Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+# -- Names of secrets to use for authentication to image registries
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: "regscale-local"
+
+secret:
+  # -- A Valid JSON Web Token
+  jwtSecretKey: "JWTSecretKeyFromSomeWhere6789012"
+  encryptionKey: "YourEncryptionKeyFromSomeWhere12"
+  # I'm not really happy with how this is formatted with the double quotes and backslashes,
+  # some yaml libraries don't like it but I believe it's in spec and helm is okay with it
+  # -- MSSQL Entity Framework Connection String
+  dbConnectionString: "Server=tcp:yourdatabase.database.windows.net,1433;\
+    Initial Catalog=ATLAS;\
+    Persist Security Info=False;\
+    User ID=youruserID;\
+    Password=yourPassword;\
+    MultipleActiveResultSets=False;\
+    Encrypt=True;\
+    TrustServerCertificate=False;\
+    Connection Timeout=30;"
+
+configMap:
+  # -- Override the location that RegScale saves files, this is automatically 
+  # set to the directory that the PV is mounted to
+  storedFilesPathOverride: ""
+  fileSizeLimit: "104857600"
+  # -- If you want to enable monitoring, enter your Sentry.io Sdn, otherwise, leave blank
+  sentry: ""
+
+# -- The path that the PV is mounted to and where RegScale stores files
+volumeMountPath: "/regscale/files"
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+persistentVolumeClaim:
+  # -- Specifies a specific storageClassName for the PVC, defaults to empty to allow cluster to provision
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  capacity: "1Gi"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 service:
-  name: regscale-svc
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
-  targetPort: 80
 
-volumeMounts:
-  mountPath: "/regscale/files"
-  name: regscale-files 
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
-JWTSecretKey: "JWTSecretKeyFromSomeWhere6789012"
-SQLConn: "Server=tcp:yourdatabase.database.windows.net,1433;Initial Catalog=ATLAS;Persist Security Info=False;User ID=youruserID;Password=yourPassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-EncryptionKey: "YourEncryptionKeyFromSomeWhere12"
+nodeSelector: {}
 
-storageClassName: hostpath
-capacity:
-  storage: 1Gi
-hostPath:
-  path: "youLocalHostPathpath"
-  type: DirectoryOrCreate
+tolerations: []
 
-
-StoredFilesPath: "/regscale/files"
-FileSizeLimit: "104857600"
-
-pvc:
-  name: regscale-pvc
-
-pv:
-  name: regscale-pv
-
-configMapRef:
-  name: regscale-config
-
-secretRef:
-  name: regscale-secrets
+affinity: {}
