@@ -1,0 +1,29 @@
+name: Empty-gh-pages-branch
+
+on:
+  push:
+    branches: [ none ] 
+
+    # paths-ignore:
+    #   - README.md
+jobs:
+  create-empty-branch:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure git repo 
+      run: |
+         git config user.email "${{ secrets.HELM_GITHUB_EMAIL }}"
+         git config user.name "${{ secrets.HELM_GITHUB_USER }}"     
+    - name: Create empty aws-gh-pages branch
+      run: | 
+           git switch --orphan aws-gh-pages
+           git commit --allow-empty -m "Initial commit"
+           git push -u origin aws-gh-pages
+    - name: Create empty azure-gh-pages branch
+      run: | 
+           git switch --orphan azure-gh-pages
+           git commit --allow-empty -m "Initial commit"
+           git push -u origin azure-gh-pages           
+
+            
