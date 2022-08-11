@@ -2,7 +2,7 @@ name: Helm Publish
 
 on:
   push:
-    branches: [ echehelm ]
+    branches: [ main ]
     paths-ignore:
       - create-empty-gh-pages-branch.yml
 jobs:
