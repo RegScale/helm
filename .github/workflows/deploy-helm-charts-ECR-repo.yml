@@ -7,7 +7,7 @@ on:
       - create-empty-gh-pages-branch.yml
       - publish-helm-charts-gh-pages.yml
 jobs:
-  publish-aws-helmchart-ECR:
+  publish-aws-and-azure-helmcharts-ECR:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
