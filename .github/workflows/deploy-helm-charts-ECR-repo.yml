@@ -22,7 +22,7 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Accessing ECR repo and authenticate helm client
+    - name: Access ECR repo and authenticate helm client
       env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run : aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
