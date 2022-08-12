@@ -7,7 +7,7 @@ on:
       - create-empty-gh-pages-branch.yml
       - publish-helm-charts-gh-pages.yml
 jobs:
-  publish-aws-and-azure-helmcharts-ECR:
+  publish-aws-helmcharts-ECR:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -30,5 +30,4 @@ jobs:
     - name: helm push  to ECR
       run:  |
             helm push $GITHUB_WORKSPACE/helm-charts/aws-helm/*.tgz oci://${{ steps.login-ecr.outputs.registry }}/
-            helm push $GITHUB_WORKSPACE/helm-charts/azure-helm/*.tgz oci://${{ steps.login-ecr.outputs.registry }}/
 
