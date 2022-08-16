@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths-ignore:
       - create-empty-gh-pages-branch.yml
+      - deploy-helm-charts-ECR-repo.yml
 jobs:
   publish-aws-helmchart:
     runs-on: ubuntu-latest

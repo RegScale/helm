@@ -1,4 +1,4 @@
-name: Helm Publish
+name: Helm Publish to AWS ECR and Azure ACR
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - create-empty-gh-pages-branch.yml
       - publish-helm-charts-gh-pages.yml
 jobs:
-  publish-aws-helmcharts-ECR:
+  publish-aws-helmchart-ECR:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -30,4 +30,18 @@ jobs:
     - name: helm push  to ECR
       run:  |
             helm push $GITHUB_WORKSPACE/helm-charts/aws-helm/*.tgz oci://${{ steps.login-ecr.outputs.registry }}/
+            
+  publish-azure-helmchart-acr:
+    needs: [ publish-aws-helmchart-ECR ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: authenticate helm client
+      env:
+          ACR_SERVER: regscalecontainerregistry.azurecr.io
+      run: |
+            helm registry login ${{ env.ACR_SERVER }} --username ${{ secrets.ACR_TOKEN }} --password ${{ secrets.ACR_HELM_PASSWORD }}    
 
+    - name: helm push to ACR
+      run: |
+           helm push $GITHUB_WORKSPACE/helm-charts/azure-helm/*.tgz oci://${{ env.ACR_SERVER }}/     
