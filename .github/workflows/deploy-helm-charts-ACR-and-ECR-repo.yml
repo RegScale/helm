@@ -44,4 +44,4 @@ jobs:
 
     - name: helm push to ACR
       run: |
-           helm push $GITHUB_WORKSPACE/helm-charts/azure-helm/*.tgz oci://${{ env.ACR_SERVER }}    
+           helm push $GITHUB_WORKSPACE/helm-charts/azure-helm/*.tgz oci://${{ env.ACR_SERVER }}/regscale    
