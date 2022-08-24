@@ -8,3 +8,5 @@ data:
   StoredFilesPath: "{{ default .Values.configMap.storedFilesPathOverride .Values.volumeMountPath }}"
   FileSizeLimit: "{{ .Values.configMap.fileSizeLimit }}"
   SENTRY: "{{ .Values.configMap.sentry }}"
+  DOTNET_URLS: "http://+:8080"
+  ASPNETCORE_URLS: "http://+:8080"
