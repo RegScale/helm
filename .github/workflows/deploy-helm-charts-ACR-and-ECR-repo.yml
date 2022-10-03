@@ -1,0 +1,48 @@
+name: Helm Publish to AWS ECR and Azure ACR
+
+on:
+  push:
+    branches: [ echehelm ]
+    paths-ignore:
+      - create-empty-gh-pages-branch.yml
+      - publish-helm-charts-gh-pages.yml
+env:
+      ACR_SERVER: regscalecontainerregistry.azurecr.io  
+jobs:
+  publish-aws-helmchart-ECR:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Access ECR repo and authenticate helm client
+      env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run : aws ecr get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+    
+    - name: helm push  to ECR
+      run:  |
+            helm push $GITHUB_WORKSPACE/helm-charts/aws-helm/*.tgz oci://${{ steps.login-ecr.outputs.registry }}/
+
+  publish-azure-helmchart-acr:
+    needs: [ publish-aws-helmchart-ECR ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: authenticate helm client
+
+      run: |
+            helm registry login ${{ env.ACR_SERVER }} --username ${{ secrets.ACR_TOKEN }} --password ${{ secrets.ACR_HELM_PASSWORD }}    
+
+    - name: helm push to ACR
+      run: |
+           helm push $GITHUB_WORKSPACE/helm-charts/azure-helm/*.tgz oci://${{ env.ACR_SERVER }}/    
